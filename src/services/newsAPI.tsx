@@ -1,30 +1,50 @@
 import { NewsItem } from "../types/types";
 
-// hardcoded news for styling, later ill do the actual fetching
-const newsItem: NewsItem = {
-  source: {
-    id: null,
-    name: "Android Central",
-  },
-  author: "techkritiko@gmail.com (Jay Bonggolto)",
-  title:
-    "The Huawei Watch 4 has an unusual health feature the Apple Watch has yet to pick up",
-  description:
-    "Huawei claims its new smartwatch, the Huawei Watch 4, is equipped with an unprecedented wearable feature for tracking blood sugar levels.",
-  url: "https://www.androidcentral.com/wearables/huawei-watch-4-high-blood-sugar-tracking-claims",
-  urlToImage:
-    "https://cdn.mos.cms.futurecdn.net/kX562SL4RmGXZG2EArdVLi-1200-80.jpg",
-  publishedAt: "2023-05-21T10:56:00Z",
-  content:
-    "<ul><li>A Huawei executive claims the newly launched Watch 4 has a blood glucose monitoring feature.</li><li>Huawei says the smartwatch will alert the wearer when it detects irregular blood sugar lev… [+2799 chars]",
-};
+export const getNews = async (): Promise<NewsItem[]> => {
+  const storageKey = 'news_data';
+  const expiryMinutes = 10;
 
-export const getNews = (): Promise<NewsItem[]> => {
-  return new Promise((resolve) => {
-    resolve(
-      Array(10)
-        .fill(null)
-        .map(() => ({ ...newsItem }))
-    );
-  });
+  try {
+    const cachedData = localStorage.getItem(storageKey);
+
+    if (cachedData !== null) {
+      const { data, timestamp } = JSON.parse(cachedData);
+      console.log('Cached data:', data, 'Timestamp:', timestamp);
+
+      if (data && timestamp) {
+        // Checkin if data is within expiry time
+        const isExpired = (Date.now() - timestamp) > expiryMinutes * 60 * 1000;
+
+        if (!isExpired) {
+          return data;
+        }
+      }
+    }
+  } catch (error) {
+    console.error('Failed to get data from local storage:', error);
+  }
+
+  const apiKey = process.env.REACT_APP_NEWSAPI_APIKEY;
+  const response = await fetch(`https://newsapi.org/v2/top-headlines?country=us&apiKey=${apiKey}`);
+
+  if (!response.ok) {
+    console.error('Bad response from news API:', response);
+    throw new Error("News API request failed");
+  }
+
+  const data = await response.json();
+  console.log('Fetched data:', data);
+
+  try {
+    // Storing data with timestamp
+    localStorage.setItem(storageKey, JSON.stringify({ data: data.articles, timestamp: Date.now() }));
+  } catch (error) {
+    console.error('Failed to save data to local storage:', error);
+  }
+
+  if (!Array.isArray(data.articles)) {
+    throw new Error("Invalid data from API");
+  }
+
+  return data.articles as NewsItem[];
 };

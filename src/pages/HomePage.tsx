@@ -20,14 +20,17 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         getNews()
             .then(newsResponse => {
+                console.log('News response:', newsResponse);
                 setNews(newsResponse);
             })
             .catch(err => {
+                console.error('Error fetching news:', err);
                 setError(err.message);
             })
             .finally(() => {
                 setIsLoading(false);
             });
+
 
         getCurrentCoordinates()
             .then(coords => {
@@ -56,15 +59,17 @@ const HomePage: React.FC = () => {
         return <div>Error: {error}</div>;
     }
 
-    console.log(weather)
-
     return (
-        <div className=" flex flex-col flex-col-reverse sm:grid grid-cols-3 gap-4">
+        <div className=" flex flex-col-reverse sm:grid grid-cols-3 gap-4">
             <div className="col-span-2">
-                <h1 className="text-gray-800 text-center  sm:text-5xl">Latest News</h1>
-                {news.map((newsItem) => (
-                    <NewsCard key={newsItem.title} newsItem={newsItem} />
-                ))}
+                <h1 className="text-gray-800 my-4 text-center font-bold text-xl sm:text-5xl">Breaking News</h1>
+                {news === null ? (
+                    <p>Loading news...</p>
+                ) : (
+                    news.map((newsItem) => (
+                        <NewsCard key={newsItem.title} newsItem={newsItem} />
+                    ))
+                )}
             </div>
             <div className="col-span-1">
                 <WeatherWidget weather={weather} />

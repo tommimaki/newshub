@@ -7,7 +7,7 @@ type Props = {
 
 const NewsCard: React.FC<Props> = ({ newsItem }) => {
     return (
-        <div className="mx-auto px-2 py-1 max-w-4xl my-2">
+        <div className="mx-auto px-2 py-1 max-w-2xl my-2">
             <div className="bg-white shadow-xl rounded-lg mb-1 tracking-wide">
                 {newsItem.urlToImage && (
                     <div className="md:flex-shrink-0">

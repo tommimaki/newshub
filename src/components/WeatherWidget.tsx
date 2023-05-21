@@ -22,11 +22,13 @@ const WeatherWidget: React.FC<WeatherWidgetProps> = ({ weather }) => {
                                 <p className="mb-1">Humidity: {weather.current.humidity}%</p>
                             </div>
                         </div>
+                        <div className="flex-grow border-l-2 border-gray-700 mx-6 lg:self-center"></div>
                         <div className="mt-4 lg:mt-0">
                             <img src={weather.current.condition.icon} alt={weather.current.condition.text} className="h-12 w-12 lg:h-36 lg:w-36 mb-1" />
                             <p className="text-4xl lg:text-6xl text-gray-700">{weather.current.temp_c}°C</p>
                         </div>
                     </div>
+
                 </>
             ) : (
                 <div>
