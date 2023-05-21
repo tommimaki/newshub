@@ -5,6 +5,7 @@ import { NewsItem } from "../types/types";
 import { getNews } from "../services/newsAPI";
 import { getWeatherByCoordinates } from "../services/weatherAPI";
 import { getCurrentCoordinates } from "../services/userLocation";
+import LatestNews from "../components/LatestNews";
 
 const HomePage: React.FC = () => {
     const [news, setNews] = useState<NewsItem[]>([]);
@@ -20,7 +21,6 @@ const HomePage: React.FC = () => {
     useEffect(() => {
         getNews()
             .then(newsResponse => {
-                console.log('News response:', newsResponse);
                 setNews(newsResponse);
             })
             .catch(err => {
@@ -73,6 +73,7 @@ const HomePage: React.FC = () => {
             </div>
             <div className="col-span-1">
                 <WeatherWidget weather={weather} />
+                <LatestNews />
             </div>
         </div>
     );
