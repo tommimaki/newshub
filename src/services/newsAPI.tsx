@@ -1,4 +1,4 @@
-import { NewsItem } from "../types";
+import { NewsItem } from "../types/types";
 
 // hardcoded news for styling, later ill do the actual fetching
 const newsItem: NewsItem = {
