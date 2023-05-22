@@ -78,7 +78,7 @@ export const getLatestNews = async (): Promise<NewsItem[]> => {
   // const formattedDate = fiveHoursAgo.toISOString().split('T')[0];
 
   const url = `https://newsapi.org/v2/everything?domains=bbc.co.uk,cnn.com,nytimes.com,techcrunch.com,thenextweb.com&apiKey=${apiKey}`;
-  console.log(url, 'url')
+
 
   const response = await fetch(url);
 

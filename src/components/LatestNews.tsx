@@ -13,7 +13,6 @@ const LatestNews: React.FC = () => {
     useEffect(() => {
         getLatestNews()
             .then(newsResponse => {
-                console.log('latest newsResponse', newsResponse)
                 setNews(newsResponse);
             })
             .catch(err => {
@@ -32,10 +31,8 @@ const LatestNews: React.FC = () => {
         return <div>Error: {error}</div>;
     }
 
-    console.log(news)
+
     return (
-
-
         <div className="mr-5 flex flex-col">
             <h2 className="text-lg mt-4 text-center font-bold sm:text-3xl">Latest News</h2>
             {news.slice(3, 20).map((newsItem) => (
