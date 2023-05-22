@@ -2,15 +2,22 @@ import React from 'react';
 import HomePage from './pages/HomePage';
 import './index.css';
 import Header from './components/Header';
-
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NewsArticlePage from './pages/NewsArticlePage';
 
 
 function App() {
   return (
-    <div className="App">
+    <BrowserRouter>
       <Header />
-      <HomePage />
-    </div>
+      <div>
+        <Routes>
+          <Route path='/' element={<HomePage />} />
+          <Route path="/article/:articleId" element={<NewsArticlePage />} />
+
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 

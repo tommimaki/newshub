@@ -60,8 +60,8 @@ const HomePage: React.FC = () => {
     }
 
     return (
-        <div className=" flex flex-col-reverse sm:grid grid-cols-3 gap-4">
-            <div className="col-span-2">
+        <div className=" flex flex-col-reverse sm:grid grid-cols-5 gap-4">
+            <div className="col-span-3">
                 <h1 className="text-gray-800 my-4 text-center font-bold text-xl sm:text-5xl">Breaking News</h1>
                 {news === null ? (
                     <p>Loading news...</p>
@@ -71,7 +71,7 @@ const HomePage: React.FC = () => {
                     ))
                 )}
             </div>
-            <div className="col-span-1">
+            <div className="col-span-2">
                 <WeatherWidget weather={weather} />
                 <LatestNews />
             </div>
