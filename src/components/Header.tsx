@@ -1,12 +1,18 @@
 import React, { useState } from 'react';
 import newspaper from '../assets/newspaper.png'
+import AuthModal from '../auth/Auth';
 import { MenuIcon, CloseIcon } from '../assets/icons';
 
 const Header: React.FC = () => {
     const [isMenuOpen, setMenuOpen] = useState(false);
+    const [isModalOpen, setModalOpen] = useState(false);
 
     const handleMenuToggle = () => {
         setMenuOpen(!isMenuOpen);
+    }
+
+    const handleModalToggle = () => {
+        setModalOpen(!isModalOpen);
     }
 
     return (
@@ -46,7 +52,9 @@ const Header: React.FC = () => {
                     </ul>
                 </div>
                 <div className="flex items-center p-4 gap-6">
-                    <button className="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]">
+                    <button className="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec] "
+                        onClick={handleModalToggle}
+                    >
                         Sign in
                     </button>
                     <button
@@ -57,6 +65,7 @@ const Header: React.FC = () => {
                     </button>
                 </div>
             </ nav>
+            {isModalOpen && <AuthModal closeModal={handleModalToggle} />}
 
         </header >
     );
