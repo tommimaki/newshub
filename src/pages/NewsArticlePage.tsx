@@ -8,7 +8,7 @@ const NewsArticlePage = () => {
     console.log(article);
 
     return (
-        <div className="container my-24 px-6 mx-auto">
+        <div className="container py-20 px-6 mx-auto">
 
             <section className="mb-32 text-gray-800">
                 <h1 className="font-bold text-3xl mb-4">{article?.title}</h1>

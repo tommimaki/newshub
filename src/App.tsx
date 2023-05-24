@@ -10,7 +10,7 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <div>
+      <div className='bg-slate-100'>
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route path="/article/:articleId" element={<NewsArticlePage />} />

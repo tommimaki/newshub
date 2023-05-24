@@ -2,13 +2,6 @@ import React from 'react';
 import { NewsItem } from '../types/types';
 import { Link } from 'react-router-dom';
 
-// Define type for the state object
-// type State = {
-//     article: NewsItem;
-// };
-
-// Extend the LinkProps interface to include the state object
-
 
 
 type Props = {

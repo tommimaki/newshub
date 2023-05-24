@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import NewsCard from "../components/NewsCard";
 import { NewsItem } from "../types/types";
 import { getLatestNews } from "../services/newsAPI";
+import SmallNews from "./SmallNewsCard";
 
 
 
@@ -36,7 +37,7 @@ const LatestNews: React.FC = () => {
         <div className="mr-5 flex flex-col">
             <h2 className="text-lg mt-4 text-center font-bold sm:text-3xl">Latest News</h2>
             {news.slice(3, 20).map((newsItem) => (
-                <NewsCard key={newsItem.title} newsItem={newsItem} />
+                <SmallNews key={newsItem.title} newsItem={newsItem} />
             ))}
 
             <button className=" border-sky-200 border-w-2 my-4 mx-auto">Read More</button>
