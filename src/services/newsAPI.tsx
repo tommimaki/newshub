@@ -102,3 +102,51 @@ export const getLatestNews = async (): Promise<NewsItem[]> => {
 
   return data.articles as NewsItem[];
 };
+export const getCustomNews = async (
+  q: string,
+  from: string,
+  to: string,
+  language = 'en',
+): Promise<NewsItem[]> => {
+  const url = `https://newsapi.org/v2/everything?q=${q}&from=${from}&to=${to}&language=${language}&sortBy=popularity&apiKey=${process.env.REACT_APP_NEWSAPI_APIKEY}`;
+
+  const storageKey = 'custom_news_data';
+  const expiryMinutes = 10;
+
+  try {
+    const cachedData = localStorage.getItem(storageKey);
+
+    if (cachedData !== null) {
+      const { data, timestamp } = JSON.parse(cachedData);
+
+      const isExpired = (Date.now() - timestamp) > expiryMinutes * 60 * 1000;
+
+      if (!isExpired && data.q === q && data.from === from && data.to === to) {
+        return data.articles;
+      }
+    }
+  } catch (error) {
+    console.error('Failed to get data from local storage:', error);
+  }
+
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    console.error('Bad response from news API:', response);
+    throw new Error('News API request failed');
+  }
+
+  const data = await response.json();
+
+  if (!Array.isArray(data.articles)) {
+    throw new Error('Invalid data from API');
+  }
+
+  try {
+    localStorage.setItem(storageKey, JSON.stringify({ data: data.articles, q, from, to, timestamp: Date.now() }));
+  } catch (error) {
+    console.error('Failed to save data to local storage:', error);
+  }
+
+  return data.articles as NewsItem[];
+};

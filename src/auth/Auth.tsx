@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import axios from 'axios';
+import AuthContext from './AuthContext';
 
 type AuthModalProps = {
     closeModal: () => void;
@@ -10,6 +11,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ closeModal }) => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const { setIsLoggedIn } = useContext(AuthContext);
+
 
     const handleSubmit = async (event: any) => {
         event.preventDefault();
@@ -23,8 +26,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ closeModal }) => {
 
         try {
             const { data } = await axios.post(url, { username, password });
-
             localStorage.setItem('token', data.token);
+            setIsLoggedIn(true);
             alert(`${isLogin ? 'Login' : 'Registration'} successful`);
         } catch (error) {
             console.error(error);

@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import newspaper from '../assets/newspaper.png'
 import AuthModal from '../auth/Auth';
+import AuthContext from '../auth/AuthContext';
+import { Link } from 'react-router-dom';
 import { MenuIcon, CloseIcon } from '../assets/icons';
 
 const Header: React.FC = () => {
     const [isMenuOpen, setMenuOpen] = useState(false);
     const [isModalOpen, setModalOpen] = useState(false);
+    const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+
+
 
     const handleMenuToggle = () => {
         setMenuOpen(!isMenuOpen);
@@ -14,6 +19,12 @@ const Header: React.FC = () => {
     const handleModalToggle = () => {
         setModalOpen(!isModalOpen);
     }
+
+    const handleLogout = () => {
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+    }
+
 
     return (
         <header className="flex items-center justify-center border-b-2 mx-auto max-w-6xl">
@@ -30,33 +41,49 @@ const Header: React.FC = () => {
                 >
                     <ul className="flex md:flex-row flex-col md:items-center md:gap-[4vw] gap-8 min-w-[50%]">
                         <li>
-                            <a className="hover:text-gray-500" href="#">
+                            <Link className="hover:text-gray-500" to={'/'}>
                                 Home
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a className="hover:text-gray-500" href="#">
-                                Categories
-                            </a>
+                            <Link className="hover:text-gray-500" to={'/foryou'}>
+                                For You
+                            </Link>
                         </li>
                         <li>
                             <a className="hover:text-gray-500" href="#">
                                 Preferences
                             </a>
                         </li>
-                        <li>
-                            <a className="hover:text-gray-500" href="#">
-                                Profile?
-                            </a>
-                        </li>
+                        {
+                            isLoggedIn &&
+                            <li>
+                                <Link className="hover:text-gray-500" to={"/profile"}>
+                                    Profile
+                                </Link>
+                            </li>
+                        }
                     </ul>
                 </div>
                 <div className="flex items-center p-4 gap-6">
-                    <button className="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec] "
-                        onClick={handleModalToggle}
-                    >
-                        Sign in
-                    </button>
+                    {isLoggedIn ? (
+                        <>
+                            <button
+                                className="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]"
+                                onClick={handleLogout}
+                            >
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <button
+                            className="bg-[#a6c1ee] text-white px-5 py-2 rounded-full hover:bg-[#87acec]"
+                            onClick={handleModalToggle}
+                        >
+                            Sign in
+                        </button>
+                    )}
+
                     <button
                         className="text-3xl cursor-pointer md:hidden"
                         onClick={handleMenuToggle}
@@ -65,7 +92,8 @@ const Header: React.FC = () => {
                     </button>
                 </div>
             </ nav>
-            {isModalOpen && <AuthModal closeModal={handleModalToggle} />}
+            {!isLoggedIn && isModalOpen && <AuthModal closeModal={handleModalToggle} />}
+
 
         </header >
     );
