@@ -1,3 +1,5 @@
+import { type } from "os";
+
 type Source = {
   id: string | null;
   name: string | null;
@@ -12,6 +14,13 @@ export type NewsItem = {
   urlToImage: string | null;
   publishedAt: string;
   content: string;
+};
+
+export type UserPreferences = {
+  searchTerms: string[];
+  startDate: string;
+  endDate: string;
+  language: string;
 };
 
 export type WeatherResponse = {

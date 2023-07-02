@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getCustomNews } from '../services/newsAPI';
 import { GreenTick } from '../assets/icons';
+
+import { saveUserPreferences } from '../services/userAPI';
 
 const NewsForYou: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
@@ -11,6 +13,7 @@ const NewsForYou: React.FC = () => {
     const [language, setLanguage] = useState('en'); // Language for search (default is English)
     const [showTick, setShowTick] = useState(false)
     const [buttonClicked, setButtonClicked] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
 
     const [firstVisit, setFirstVisit] = useState(true);
@@ -19,29 +22,43 @@ const NewsForYou: React.FC = () => {
 
     const languages = ['ar', 'de', 'en', 'es', 'fr', 'he', 'it', 'nl', 'no', 'pt', 'ru', 'sv', 'ud', 'zh'];
 
-    useEffect(() => {
-        const fetchArticles = async () => {
-            try {
-                const fetchedArticles = await getCustomNews(searchTerms.join(','), startDate, endDate, language);
-                setArticles(fetchedArticles);
-            } catch (error) {
-                console.error(error);
-            }
-        };
-
-        if (searchTerms.length > 0) {
-            fetchArticles();
+    const savePreferences = useCallback(async () => {
+        try {
+            await saveUserPreferences('currentUser', {
+                searchTerms,
+                startDate,
+                endDate,
+                language,
+            });
+            alert('Preferences saved successfully!');
+        } catch (err) {
+            console.error(err);
+            alert('An error occurred while saving preferences.');
         }
     }, [searchTerms, startDate, endDate, language]);
 
+    const fetchArticles = useCallback(async () => {
+        try {
+            const fetchedArticles = await getCustomNews(searchTerms.join(','), startDate, endDate, language);
+            setArticles(fetchedArticles);
+        } catch (error) {
+            console.error(error);
+            setError('Failed to fetch articles. Please try again.'); // set error message
+        }
+    }, [searchTerms, startDate, endDate, language]);
+
+    useEffect(() => {
+        if (searchTerms.length > 0) {
+            fetchArticles();
+        }
+    }, [fetchArticles]);
+
     const handleAddSearchTerm = () => {
-        if (searchTerm) {
+        if (searchTerm && !searchTerms.includes(searchTerm)) {
             setSearchTerms(prevSearchTerms => [...prevSearchTerms, searchTerm]);
             setSearchTerm('');
             setShowTick(true)
-            setTimeout(() =>
-                setShowTick(false), 3000
-            )
+            setTimeout(() => setShowTick(false), 3000);
         }
     };
 
@@ -56,18 +73,26 @@ const NewsForYou: React.FC = () => {
 
 
     console.log(searchTerms)
-    // console.log(localStorage.token)
-    // In your render method, before returning your main component:
+
     if (firstVisit) {
         return (
             <div>
                 <h1 className='text-center sm:text-4xl mt-4'>Welcome! What do you want to read about? </h1>
+                {error && <p>{error}</p>}
                 <div className='mt-4 flex flex-wrap gap-2 sm:pb-12 justify-center relative'>
                     {defaultTopics.map((topic, index) => (
-                        <button className='btn-orange' key={index} onClick={() => {
-                            setSearchTerms(prevSearchTerms => [...prevSearchTerms, topic]);
-                            setButtonClicked(true);
-                        }}>{topic}</button>
+                        <button
+                            className='btn-orange'
+                            key={index}
+                            onClick={() => {
+                                if (!searchTerms.includes(topic)) {
+                                    setSearchTerms(prevSearchTerms => [...prevSearchTerms, topic]);
+                                    setButtonClicked(true);
+                                }
+                            }}
+                        >
+                            {topic}
+                        </button>
                     ))}
                     <div className="absolute left-0 right-0 bottom-0 mx-auto transform -translate-y-1/2 pointer-events-none">
                         {buttonClicked && <GreenTick />}
@@ -91,6 +116,11 @@ const NewsForYou: React.FC = () => {
                         />
                         <button className="btn btn-primary ml-2" onClick={handleAddSearchTerm}>Add</button>
                     </div>
+                    <div className='flex justify-center'>
+                        <button className="btn btn-green my-2" onClick={savePreferences}>Save Preferences</button>
+
+                    </div>
+
                 </div>
                 <select
                     value={language}
